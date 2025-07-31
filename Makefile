@@ -8,10 +8,10 @@ LDFLAGS = -m elf_i386
 BUILD = build
 ISO = DustOS.img
 
-BOOTLOADER_SRC = bootloader/bootloader.s
-KERNEL_ASM_SRC = kernel/entry.s
-KERNEL_C_SRC = kernel/kernel.c
-LINKER_SCRIPT = linkers/kernel.ld
+BOOTLOADER_SRC = src/bootloader/bootloader.s
+KERNEL_ASM_SRC = src/kernel/entry.s
+KERNEL_C_SRC = src/kernel/kernel.c
+LINKER_SCRIPT = src/linkers/kernel.ld
 
 BOOTLOADER_BIN = $(BUILD)/bootloader.bin
 KERNEL_OBJ = $(BUILD)/kernel.o
