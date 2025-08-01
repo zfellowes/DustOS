@@ -1,12 +1,12 @@
-OUTPUT_FORMAT("binary")
 ENTRY(_start)
 
 SECTIONS
 {
-	. = 0x7E00;
+	. = 0x00100000;
 
 	.text :
 	{
+		*(.multiboot_header)
 		*(.text*)
 	}
 
@@ -23,6 +23,6 @@ SECTIONS
 	.bss :
 	{
 		*(.bss*)
+		*(COMMON)
 	}
 }
-
