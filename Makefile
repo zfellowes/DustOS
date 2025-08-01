@@ -13,7 +13,7 @@ KERNEL_ELF = $(BUILD)/kernel.elf
 ISO = DustOS.iso
 
 MULTIBOOT_HDR = src/bootloader/multiboot.s
-ENTRY_ASM = src/kernel/entry.s
+ENTRY_ASM = src/kernel/arch/x86/entry.s
 KERNEL_C = src/kernel/kernel.c
 LINKER_SCRIPT = src/linkers/kernel.ld
 
