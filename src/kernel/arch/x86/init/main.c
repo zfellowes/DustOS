@@ -1,4 +1,4 @@
-#include "console/console.h"
+#include "../kernel/console/console.h"
 
 void kernel_main()
 {

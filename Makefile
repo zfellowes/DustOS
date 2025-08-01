@@ -16,7 +16,7 @@ ISO = DustOS.iso
 
 MULTIBOOT_HDR = src/bootloader/multiboot.s
 ENTRY_ASM = src/kernel/arch/x86/entry.s
-KERNEL_C = src/kernel/arch/x86/kernel.c
+KERNEL_C = src/kernel/arch/x86/init/main.c
 LINKER_SCRIPT = src/kernel/arch/x86/linker.ld
 
 GRUB_CFG = src/bootloader/grub/grub.cfg
@@ -30,7 +30,7 @@ $(KERNEL_ELF): $(MULTIBOOT_HDR) $(ENTRY_ASM) $(KERNEL_C) $(LINKER_SCRIPT)
 	$(NASM) $(ASMFLAGS) $(MULTIBOOT_HDR) -o $(BUILD)/multiboot_header.o
 	$(NASM) $(ASMFLAGS) $(ENTRY_ASM) -o $(BUILD)/entry.o
 	$(CC) $(CFLAGS) -m32 -c $(KERNEL_C) -o $(BUILD)/kernel.o
-	$(CC) $(CFLAGS) -m32 -c src/kernel/arch/x86/console/console.c -o $(BUILD)/console.o
+	$(CC) $(CFLAGS) -m32 -c src/kernel/arch/x86/kernel/console/console.c -o $(BUILD)/console.o
 	$(LD) $(LDFLAGS) -T $(LINKER_SCRIPT) $(BUILD)/multiboot_header.o $(BUILD)/entry.o $(BUILD)/kernel.o $(BUILD)/console.o -o $(KERNEL_ELF)
 
 $(ISO): $(KERNEL_ELF) $(GRUB_CFG)
