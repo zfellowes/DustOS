@@ -74,38 +74,47 @@ void kclear(void)
 }
 
 // int to str, return pointer to buffer
-static char* itoa_unsigned(uint32_t value, char *buf, int base)
+static char* uint_to_str(uint32_t value, int base, char *out, int min_width, int pad_zero)
 {
 	static const char digits[] = "0123456789abcdef";
 	char temp[33];
 	int i = 0;
+
 	if (value == 0) {
-		buf[0] = '0';
-		buf[1] = '\0';
-		return buf;
+		temp[i++] = '0';
+	} else {
+		while (value != 0) {
+			temp[i++] = digits[value % base];
+			value /= base;
+		}
 	}
-	while (value != 0) {
-		temp[i++] = digits[value % base];
-		value /= base;
+
+	while (i < min_width) {
+		temp[i++] = pad_zero ? '0' : ' ';
 	}
+
 	int pos = 0;
+
 	while (i--) {
-		buf[pos++] = temp[i];
+		out[pos++] = temp[i];
 	}
-	buf[pos] = '\0';
-	return buf;
+
+	out[pos] = '\0';
+	return out;
 }
 
-static char* itoa_signed(int32_t value, char *buf)
+static char* int_to_str(int32_t value, char *out, int min_width, int pad_zero)
 {
 	if (value < 0) {
-		buf[0] = '-';
-		itoa_unsigned((uint32_t)(-value), buf + 1, 10);
+		*out++ = '-';
+		uint_to_str((uint32_t)(-value), 10, out, (min_width > 0 ? min_width - 1 : 0), pad_zero);
 	} else {
-		itoa_unsigned((uint32_t)value, buf, 10);
+		uint_to_str((uint32_t)value, 10, out, min_width, pad_zero);
 	}
-	return buf;
+
+	return out;
 }
+
 
 // printf (currently supports only %s %d %u %x %%)
 void kprintf(const char *fmt, ...)
@@ -120,6 +129,23 @@ void kprintf(const char *fmt, ...)
 		}
 		i++;
 		if (fmt[i] == '\0') break;
+
+		int pad_zero = 0;
+		int width = 0;
+		
+		if (fmt[i] == '0') {
+			pad_zero = 1;
+			i++;
+		}
+
+		while (fmt[i] >= '0' && fmt[i] <= '9') {
+			width = width * 10 + (fmt[i] - '0');
+			i++;
+		}
+
+		if (fmt[i] == '\0') break;
+
+
 		switch (fmt[i]) {
 			case 's': {
 				const char *s = va_arg(ap, const char*);
@@ -128,19 +154,19 @@ void kprintf(const char *fmt, ...)
 			}
 			case 'd': {
 				int val = va_arg(ap, int);
-				itoa_signed(val, numbuf);
+				int_to_str(val, numbuf, width, pad_zero);
 				kprint(numbuf);
 				break;
 			}
 			case 'u': {
 				unsigned int val = va_arg(ap, unsigned int);
-				itoa_unsigned(val, numbuf, 10);
+				uint_to_str(val, 10, numbuf, width, pad_zero);
 				kprint(numbuf);
 				break;
 			}
 			case 'x': {
 				unsigned int val = va_arg(ap, unsigned int);
-				itoa_unsigned(val, numbuf, 16);
+				uint_to_str(val, 16, numbuf, width, pad_zero);
 				kprint(numbuf);
 				break;
 			}
