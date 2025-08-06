@@ -3,16 +3,20 @@
 
 # DustOS
 
-DustOS is my own operating system I am currently developing.
+DustOS is my attempt of making an operating system. 
+
+A lot of code in this repository I have not written my self as I am lazy.. 
+
+I have tweaked some files to my own liking. 
+
+The aim of this operating system is to help me get a better understading on low level programming.
+
+I have linked below the repo/s that I have used code from/or have taken inspiration from:
+
+- https://github.com/FRosner/FrOS
 
 It currently only supports:
 - x86
-
-It uses the GRUB bootloader for now, though development of a custom bootloader will be implemented in the future.
-
-The kernel should be structured similarly to how the Linux kernel source tree looks like.
-
-I apologise for the lack of documentation and any poorly written code.
 
 ## Contributing
 
