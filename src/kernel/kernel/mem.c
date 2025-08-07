@@ -68,6 +68,22 @@ void print_dynamic_mem() {
     print_string("]\n");
 }
 
+void print_dynamic_mem_summary() {
+	dynamic_mem_node_t *current = dynamic_mem_start;
+	uint32_t used = 0;
+	while (current != NULL_POINTER) {
+		if (current->used)
+			used += current->size;
+		current = current->next;
+	}
+
+	char used_str[32];
+	int_to_string(used, used_str);
+	print_string("[+] Used dynamic memory: ");
+	print_string(used_str);
+	print_string(" bytes\n");
+}
+
 void *find_best_mem_block(dynamic_mem_node_t *dynamic_mem, size_t size) {
     // initialize the result pointer with NULL and an invalid block size
     dynamic_mem_node_t *best_mem_block = (dynamic_mem_node_t *) NULL_POINTER;

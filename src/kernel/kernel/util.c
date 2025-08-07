@@ -7,6 +7,29 @@ int string_length(char s[]) {
     return i;
 }
 
+int atoi(const char *str) {
+	int result = 0;
+	int sign = 1;
+
+	while (*str == ' ' || *str == '\t') {
+		str++;
+	}
+
+	if (*str == '-') {
+		sign = -1;
+		str++;
+	} else if (*str == '+') {
+		str++;
+	}
+
+	while (*str >= '0' && *str <= '9') {
+		result = result * 10 + (*str - '0');
+		str++;
+	}
+
+	return sign * result;
+}
+
 void reverse(char s[]) {
     int c, i, j;
     for (i = 0, j = string_length(s)-1; i < j; i++, j--) {
@@ -45,6 +68,16 @@ bool backspace(char s[]) {
         return false;
     }
 }
+
+int starts_with(const char* str, const char* prefix) {
+	while (*prefix) {
+		if (*str++ != *prefix++) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
 
 /* K&R
  * Returns <0 if s1<s2, 0 if s1==s2, >0 if s1>s2 */
