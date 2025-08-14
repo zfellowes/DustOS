@@ -40,7 +40,7 @@ static void keyboard_callback(registers_t *regs) {
         char letter = sc_ascii[(int) scancode];
         append(key_buffer, letter);
         char str[2] = {letter, '\0'};
-        kprint(str);
+        print_string(str);
     }
 }
 

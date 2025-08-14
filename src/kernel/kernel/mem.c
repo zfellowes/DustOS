@@ -41,31 +41,31 @@ void init_dynamic_mem() {
 void print_dynamic_node_size() {
     char node_size_string[256];
     int_to_string(DYNAMIC_MEM_NODE_SIZE, node_size_string);
-    kprint("DYNAMIC_MEM_NODE_SIZE = ");
-    kprint(node_size_string);
+    print_string("DYNAMIC_MEM_NODE_SIZE = ");
+    print_string(node_size_string);
     print_nl();
 }
 
 void print_dynamic_mem_node(dynamic_mem_node_t *node) {
     char size_string[256];
     int_to_string(node->size, size_string);
-    kprint("{size = ");
-    kprint(size_string);
+    print_string("{size = ");
+    print_string(size_string);
     char used_string[256];
     int_to_string(node->used, used_string);
-    kprint("; used = ");
-    kprint(used_string);
-    kprint("}; ");
+    print_string("; used = ");
+    print_string(used_string);
+    print_string("}; ");
 }
 
 void print_dynamic_mem() {
     dynamic_mem_node_t *current = dynamic_mem_start;
-    kprint("[");
+    print_string("[");
     while (current != NULL_POINTER) {
         print_dynamic_mem_node(current);
         current = current->next;
     }
-    kprint("]\n");
+    print_string("]\n");
 }
 
 void print_dynamic_mem_summary() {
@@ -79,9 +79,9 @@ void print_dynamic_mem_summary() {
 
 	char used_str[32];
 	int_to_string(used, used_str);
-	kprint("[+] Used dynamic memory: ");
-	kprint(used_str);
-	kprint(" bytes\n");
+	print_string("[+] Used dynamic memory: ");
+	print_string(used_str);
+	print_string(" bytes\n");
 }
 
 void *find_best_mem_block(dynamic_mem_node_t *dynamic_mem, size_t size) {

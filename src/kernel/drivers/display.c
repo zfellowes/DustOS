@@ -56,7 +56,7 @@ int scroll_ln(int offset) {
  * TODO:
  * - handle illegal offset (print error message somewhere)
  */
-void kprint(char *string) {
+void print_string(const char *string) {
     int offset = get_cursor();
     int i = 0;
     while (string[i] != 0) {

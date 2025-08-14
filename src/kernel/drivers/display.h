@@ -10,7 +10,7 @@
 #define REG_SCREEN_DATA 0x3d5
 
 /* Public kernel API */
-void kprint(char *string);
+void print_string(const char *string);
 
 void print_nl();
 
