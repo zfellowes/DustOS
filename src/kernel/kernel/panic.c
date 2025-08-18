@@ -5,6 +5,7 @@
 
 void panic(const char* message)
 {
+	asm volatile("cli"); // disable interrupts
 	print_string("[-] KERNEL PANIC: ");
 	print_string(message);
 	print_nl();

@@ -7,8 +7,25 @@
 #include "mem.h"
 #include "panic.h"
 #include "printk.h"
+#include "syscall.h"
 
 extern uint32_t tick;
+
+void trigger_syscall()
+{
+	asm volatile(
+		"mov $0, %%eax\n\t"
+		"int $0x80"
+		:
+		:
+		: "eax"
+	);
+}
+
+void test_syscall()
+{
+	print_string("[+] Syscall executed!\n");
+}
 
 void* alloc(int n) {
 	int *ptr = (int *) mem_alloc(n * sizeof(int));
@@ -29,11 +46,14 @@ void* alloc(int n) {
 	    }
 	return ptr;
 }
-	
+
 void start_kernel() {
 	clear_screen();
 	print_string("[+] Installing interrupt service routines (ISRs).\n");
 	isr_install();
+
+	print_string("[+] Installing syscalls.\n");
+	syscall_init();
 
 	print_string("[+] Enabling external interrupts.\n");
 	asm volatile("sti");
@@ -48,9 +68,14 @@ void start_kernel() {
 	init_timer(1);
 
 	clear_screen();
+
 	print_string("DustOS v0.0.1\n");
 	print_string("dust> ");
 }
+
+
+
+
 
 void execute_command(char *input) { //TODO create a command registry instead of an if statement for easier readability
 	if (compare_string(input, "EXIT") == 0) {
@@ -127,6 +152,9 @@ void execute_command(char *input) { //TODO create a command registry instead of 
 
 		int_to_string(esp, reg_str);
 		print_string("ESP = "); print_string(reg_str); print_nl();
+
+		register_syscall(0, test_syscall);
+		trigger_syscall();
 
 		print_string("[+] End of debug dump.\n");
 		print_string("dust> ");

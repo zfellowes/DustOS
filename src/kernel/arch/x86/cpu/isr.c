@@ -41,6 +41,7 @@ void isr_install() {
     set_idt_gate(29, (uint32_t) isr29);
     set_idt_gate(30, (uint32_t) isr30);
     set_idt_gate(31, (uint32_t) isr31);
+    set_idt_gate(128, (uint32_t) isr128);
 
     // Remap the PIC
     port_byte_out(0x20, 0x11);
@@ -115,13 +116,36 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers_t *r) {
-    print_string("received interrupt: ");
+
+	if (r->int_no < 32) {
+		print_string("received interrupt: ");
+		char s[12];
+		int_to_string(r->int_no, s);
+		print_string(s);
+		print_nl();
+		print_string(exception_messages[r->int_no]);
+		print_nl();
+	} else {
+		print_string("received interrupt: ");
+		char s[12];
+		int_to_string(r->int_no, s);
+		print_string(s);
+		print_nl();
+	}
+
+	if (interrupt_handlers[r->int_no] != 0) {
+		isr_t handler = interrupt_handlers[r->int_no];
+		handler(r);
+	}
+
+
+    /*print_string("received interrupt: ");
     char s[3];
     int_to_string(r->int_no, s);
     print_string(s);
     print_nl();
     print_string(exception_messages[r->int_no]);
-    print_nl();
+    print_nl();*/
 }
 
 void register_interrupt_handler(uint8_t n, isr_t handler) {

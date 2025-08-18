@@ -97,6 +97,13 @@ global isr28
 global isr29
 global isr30
 global isr31
+global isr128
+
+
+isr128:
+	push 0
+	push 128
+	jmp isr_common_stub
 
 ; 0: Divide By Zero Exception
 isr0:
