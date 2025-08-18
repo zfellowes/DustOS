@@ -6,6 +6,7 @@
 #include "util.h"
 #include "mem.h"
 #include "panic.h"
+#include "printk.h"
 
 extern uint32_t tick;
 
