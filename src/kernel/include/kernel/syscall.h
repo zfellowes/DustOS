@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "isr.h"
+#include <cpu/isr.h>
 
 typedef void (*syscall_t)(void);
 

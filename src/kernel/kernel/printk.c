@@ -1,6 +1,6 @@
 #include <stdarg.h>
-#include "util.h"
-#include "display.h"
+#include <kernel/util.h>
+#include <drivers/display.h>
 
 static void print_int(int value, int base, bool is_unsigned)
 {

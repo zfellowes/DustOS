@@ -1,13 +1,13 @@
-#include "idt.h"
-#include "isr.h"
-#include "timer.h"
-#include "display.h"
-#include "keyboard.h"
-#include "util.h"
-#include "mem.h"
-#include "panic.h"
-#include "printk.h"
-#include "syscall.h"
+#include <cpu/idt.h>
+#include <cpu/isr.h>
+#include <cpu/timer.h>
+#include <drivers/display.h>
+#include <drivers/keyboard.h>
+#include <kernel/util.h>
+#include <kernel/mem.h>
+#include <kernel/panic.h>
+#include <kernel/printk.h>
+#include <kernel/syscall.h>
 
 extern uint32_t tick;
 

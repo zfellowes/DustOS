@@ -1,10 +1,10 @@
 #include <stdbool.h>
-#include "keyboard.h"
-#include "ports.h"
-#include "../cpu/isr.h"
-#include "display.h"
-#include "../kernel/util.h"
-#include "../kernel/kernel.h"
+#include <drivers/keyboard.h>
+#include <drivers/ports.h>
+#include <cpu/isr.h>
+#include <drivers/display.h>
+#include <kernel/util.h>
+#include <kernel/kernel.h>
 
 #define BACKSPACE 0x0E
 #define ENTER 0x1C
