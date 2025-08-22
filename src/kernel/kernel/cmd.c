@@ -118,11 +118,12 @@ void cmd_debug(char *input) {
     print_string("[*] x86 Kernel Debug:\n");
     
     // tick count
-    char tick_str[32] = {0};
+    /*char tick_str[32] = {0};
     int_to_string(tick, tick_str);
     print_string("[+] Ticks: ");
     print_string(tick_str);
-    print_string("\n");
+    print_string("\n");*/ // this would spam invalid opcode, so just do cmd_uptime instead
+    cmd_uptime(""); // parse no arguments
     
     // dynamic memory node size
     print_dynamic_node_size();
