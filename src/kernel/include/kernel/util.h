@@ -6,7 +6,7 @@
 #define low_16(address) (uint16_t)((address) & 0xFFFF)
 #define high_16(address) (uint16_t)(((address) >> 16) & 0xFFFF)
 
-int string_length(char s[]);
+int string_length(const char s[]);
 
 int atoi(const char *str);
 

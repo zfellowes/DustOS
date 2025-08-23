@@ -9,6 +9,7 @@
 #include <kernel/printk.h>
 #include <kernel/syscall.h>
 #include <kernel/cmd.h>
+#include <kernel/fs.h>
 
 extern uint32_t tick;
 
@@ -67,6 +68,9 @@ void start_kernel() {
 
 	print_string("[+] Initializing timer.\n");
 	init_timer(1);
+
+	print_string("[+] Initializing fs.\n");
+	fs_init();
 
 	clear_screen();
 

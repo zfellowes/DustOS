@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-int string_length(char s[]) {
+int string_length(const char s[]) {
     int i = 0;
     while (s[i] != '\0') ++i;
     return i;

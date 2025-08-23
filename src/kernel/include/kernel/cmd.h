@@ -20,6 +20,9 @@ void cmd_help(char *input);  // Fixed: added char *input parameter
 
 // Individual command handlers
 void cmd_exit(char *input);
+void cmd_ls(char *input);
+void cmd_cat(char *input);
+void cmd_write(char *input);
 void cmd_panic(char *input);
 void cmd_clear(char *input);
 void cmd_info(char *input);

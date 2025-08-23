@@ -82,6 +82,25 @@ void print_nl() {
     set_cursor(newOffset);
 }
 
+void print_char(char c) {
+    int offset = get_cursor();
+
+    // scroll if we reach the bottom
+    if (offset >= MAX_ROWS * MAX_COLS * 2) {
+        offset = scroll_ln(offset);
+    }
+
+    if (c == '\n') {
+        offset = move_offset_to_new_line(offset);
+    } else {
+        set_char_at_video_memory(c, offset);
+        offset += 2;
+    }
+
+    set_cursor(offset);
+}
+
+
 void clear_screen() {
     int screen_size = MAX_COLS * MAX_ROWS;
     for (int i = 0; i < screen_size; ++i) {
