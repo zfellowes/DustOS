@@ -31,7 +31,7 @@ void cmd_init(void) {
     cmd_register("LS", cmd_ls, "List files");
     cmd_register("CAT", cmd_cat, "Print file contents: CAT <filename>");
     cmd_register("RM", cmd_rm, "Remove a file: RM <filename>");
-    //cmd_register("WRITE", cmd_write, "Write a file: WRITE <filename> <data>"); FIXME: spams invalid opcode for some reason
+    cmd_register("WRITE", cmd_write, "Write a file: WRITE <filename> <data>");
     cmd_register("ALLOC", cmd_alloc, "Allocate memory: ALLOC <size>");
     cmd_register("ECHO", cmd_echo, "Echo input: ECHO <text>");
     cmd_register("HELP", cmd_help, "Show this help message");
@@ -83,10 +83,15 @@ void cmd_execute(char *input) {
 	    return;
     }
 
-    /*if (starts_with(input, "WRITE")) {
+    if (starts_with(input, "WRITE")) {
 	    cmd_write(input);
 	    return;
-    }*/
+    }
+
+    if (starts_with(input, "HELP")) {
+	    cmd_help(input);
+	    return;
+    }
     
     // Unknown command
     print_string("[-] Unknown command: ");
@@ -95,6 +100,14 @@ void cmd_execute(char *input) {
 }
 
 void cmd_help(char *input) {  // Fixed: added char *input parameter
+    char* arg = input + 5;
+    for (int i = 0; i < command_count; i++) { // get help on a specific command
+        if (compare_string(arg, (char*)command_registry[i].name) == 0) {
+            printk((char*)command_registry[i].description);
+	    printk("\ndust> ");
+            return;
+        }
+    }
     print_string("[+] Available commands:\n");
     for (int i = 0; i < command_count; i++) {
         print_string("  ");
