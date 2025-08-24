@@ -30,6 +30,7 @@ void cmd_init(void) {
     cmd_register("UPTIME", cmd_uptime, "Show system uptime in ticks");
     cmd_register("LS", cmd_ls, "List files");
     cmd_register("CAT", cmd_cat, "Print file contents: CAT <filename>");
+    cmd_register("RM", cmd_rm, "Remove a file: RM <filename>");
     //cmd_register("WRITE", cmd_write, "Write a file: WRITE <filename> <data>"); FIXME: spams invalid opcode for some reason
     cmd_register("ALLOC", cmd_alloc, "Allocate memory: ALLOC <size>");
     cmd_register("ECHO", cmd_echo, "Echo input: ECHO <text>");
@@ -77,6 +78,11 @@ void cmd_execute(char *input) {
 	    return;
     }
 
+    if (starts_with(input, "RM")) {
+	    cmd_rm(input);
+	    return;
+    }
+
     /*if (starts_with(input, "WRITE")) {
 	    cmd_write(input);
 	    return;
@@ -105,6 +111,22 @@ void cmd_ls(char *input) {
     fs_list_files();
     print_string("dust> ");
 }
+
+void cmd_rm(char *input) {
+	char* arg = input + 3;
+	fs_file_t* file = fs_get_file(arg);
+	if (file) {
+		if (fs_rm_file(arg) == 0) {
+			print_string("[+] File removed\n");
+		} else {
+			print_string("[-] Failed to remove file\n");
+		}
+	} else {
+		print_string("[-] File not found\n");
+	}
+	print_string("dust> ");
+}
+
 
 void cmd_cat(char *input) {
     char* arg = input + 4; // skip "CAT "

@@ -22,6 +22,19 @@ void fs_list_files() {
 	}
 }
 
+int fs_rm_file(const char *name) {
+	for (uint32_t i = 0; i < fs.num_files; i++) {
+		if (compare_string((char*)fs.files[i].name, (char*)name) == 0) {
+			for (uint32_t j = i; j < fs.num_files - 1; j++) {
+				fs.files[j] = fs.files[j + 1];
+			}
+			fs.num_files--;
+			return 0;
+		}
+	}
+	return -1;
+}
+
 fs_file_t* fs_get_file(const char* name) {
 	for (uint32_t i = 0; i < fs.num_files; i++) {
 		if (compare_string((char*)fs.files[i].name, (char*)name) == 0) {

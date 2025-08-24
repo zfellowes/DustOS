@@ -20,4 +20,5 @@ void fs_init();
 void fs_list_files();
 fs_file_t* fs_get_file(const char* name);
 int fs_write_file(const char* name, uint8_t* data, uint32_t size);
+int fs_rm_file(const char* name);
 

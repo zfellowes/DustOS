@@ -25,6 +25,7 @@ void cmd_cat(char *input);
 void cmd_write(char *input);
 void cmd_panic(char *input);
 void cmd_clear(char *input);
+void cmd_rm(char *input);
 void cmd_info(char *input);
 void cmd_debug(char *input);
 void cmd_uptime(char *input);
