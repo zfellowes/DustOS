@@ -22,19 +22,19 @@ void cmd_init(void) {
     command_count = 0;
     
     // Register all commands
-    cmd_register("exit", cmd_exit, "Shutdown the system");
-    cmd_register("panic", cmd_panic, "Trigger kernel panic for debugging");
-    cmd_register("clear", cmd_clear, "Clear the screen");
-    cmd_register("info", cmd_info, "Display system information");
-    cmd_register("debug", cmd_debug, "Show detailed system debug information");
-    cmd_register("uptime", cmd_uptime, "Show system uptime in ticks");
-    cmd_register("ls", cmd_ls, "List files");
-    cmd_register("cat", cmd_cat, "Print file contents: CAT <filename>");
-    cmd_register("rm", cmd_rm, "Remove a file: RM <filename>");
-    cmd_register("write", cmd_write, "Write a file: WRITE <filename> <data>");
-    cmd_register("alloc", cmd_alloc, "Allocate memory: ALLOC <size>");
-    cmd_register("echo", cmd_echo, "Echo input: ECHO <text>");
-    cmd_register("help", cmd_help, "Show this help message");
+    cmd_register("EXIT", cmd_exit, "Shutdown the system");
+    cmd_register("PANIC", cmd_panic, "Trigger kernel panic for debugging");
+    cmd_register("CLEAR", cmd_clear, "Clear the screen");
+    cmd_register("INFO", cmd_info, "Display system information");
+    cmd_register("DEBUG", cmd_debug, "Show detailed system debug information");
+    cmd_register("UPTIME", cmd_uptime, "Show system uptime in ticks");
+    cmd_register("LS", cmd_ls, "List files");
+    cmd_register("CAT", cmd_cat, "Print file contents: CAT <filename>");
+    cmd_register("RM", cmd_rm, "Remove a file: RM <filename>");
+    cmd_register("WRITE", cmd_write, "Write a file: WRITE <filename> <data>");
+    cmd_register("ALLOC", cmd_alloc, "Allocate memory: ALLOC <size>");
+    cmd_register("ECHO", cmd_echo, "Echo input: ECHO <text>");
+    cmd_register("HELP", cmd_help, "Show this help message");
 }
 
 void cmd_register(const char *name, command_handler_t handler, const char *description) {
