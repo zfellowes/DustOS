@@ -156,8 +156,8 @@ void cmd_cat(char *input) {
 }
 
 void cmd_write(char *input) {
-    char filename[32] = {0};
-    char content[256] = {0};
+    char filename[4] = {0}; // FIXME setup a proper kernel stack, these buffers are way too small.
+    char content[8] = {0};
 
     // parse: WRITE <filename> <content>
     int i = 0;
