@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 // Command function pointer type
-typedef void (*command_handler_t)(char *input);
+typedef void (*command_handler_t)(int argc, char *argv[]);
 
 // Command structure
 typedef struct {
@@ -16,21 +16,21 @@ typedef struct {
 void cmd_init(void);
 void cmd_register(const char *name, command_handler_t handler, const char *description);
 void cmd_execute(char *input);
-void cmd_help(char *input);  // Fixed: added char *input parameter
+void cmd_help(int argc, char *argv[]);  // Fixed: added char *input parameter
 
 // Individual command handlers
-void cmd_exit(char *input);
-void cmd_ls(char *input);
-void cmd_cat(char *input);
-void cmd_write(char *input);
-void cmd_panic(char *input);
-void cmd_clear(char *input);
-void cmd_rm(char *input);
-void cmd_info(char *input);
-void cmd_debug(char *input);
-void cmd_uptime(char *input);
-void cmd_alloc(char *input);
-void cmd_echo(char *input);
+void cmd_exit(int argc, char *argv[]);
+void cmd_ls(int argc, char *argv[]);
+void cmd_cat(int argc, char *argv[]);
+void cmd_write(int argc, char *argv[]);
+void cmd_panic(int argc, char *argv[]);
+void cmd_clear(int argc, char *argv[]);
+void cmd_rm(int argc, char *argv[]);
+void cmd_info(int argc, char *argv[]);
+void cmd_debug(int argc, char *argv[]);
+void cmd_uptime(int argc, char *argv[]);
+void cmd_alloc(int argc, char *argv[]);
+void cmd_echo(int argc, char *argv[]);
 
 // External function declarations
 extern void test_syscall(void);

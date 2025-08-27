@@ -8,8 +8,29 @@
 #include <kernel/syscall.h>
 #include <kernel/fs.h>
 
-// Maximum number of commands in registry
+// Definitions
 #define MAX_COMMANDS 16
+#define MAX_ARGS 8
+#define MAX_ARG_LEN 64
+
+// Tokenize any arguments
+int tokenize(char *input, char *argv[], int max_args)
+{
+	int argc = 0;
+	while (*input && argc < max_args) {
+		while (*input == ' ') input++;
+		if (!*input) break;
+		
+		argv[argc++] = input;
+
+		while (*input && *input != ' ') input++;
+		if (*input) {
+			*input = '\0';
+			input++;
+		}
+	}
+	return argc;
+}
 
 // Command registry
 static command_t command_registry[MAX_COMMANDS];
@@ -47,133 +68,103 @@ void cmd_register(const char *name, command_handler_t handler, const char *descr
 }
 
 void cmd_execute(char *input) {
-    // Handle empty input
-    if (compare_string(input, "") == 0) {
-        print_string("\ndust> ");
-        return;
-    }
-    
-    // Try to find and execute command
-    for (int i = 0; i < command_count; i++) {
-        // Cast const char* to char* to match compare_string signature
-        if (compare_string(input, (char*)command_registry[i].name) == 0) {
-            command_registry[i].handler(input);
-            return;
-        }
-    }
-    
-    // Check for commands with arguments (like ALLOC and ECHO)
-    if (starts_with(input, "ALLOC")) {
-        cmd_alloc(input);
-        return;
-    }
-    
-    if (starts_with(input, "ECHO")) {
-        cmd_echo(input);
-        return;
-    }
+	char *argv[MAX_ARGS];
+	int argc = tokenize(input, argv, MAX_ARGS);
 
-    if (starts_with(input, "CAT")) {
-	    cmd_cat(input);
-	    return;
-    }
+	if (argc == 0) {
+		print_string("\ndust> ");
+		return;
+	}
 
-    if (starts_with(input, "RM")) {
-	    cmd_rm(input);
-	    return;
-    }
+	for (int i = 0; i < command_count; i++) {
+		if (compare_string(argv[0], (char*)command_registry[i].name) == 0) {
+			command_registry[i].handler(argc, argv);
+			return;
+		}
+	}
 
-    if (starts_with(input, "WRITE")) {
-	    cmd_write(input);
-	    return;
-    }
+	print_string("[-] Unknown command: ");
+	print_string(argv[0]);
+	print_string("\ndust> ");
 
-    if (starts_with(input, "HELP")) {
-	    cmd_help(input);
-	    return;
-    }
-    
-    // Unknown command
-    print_string("[-] Unknown command: ");
-    print_string(input);
-    print_string("\ndust> ");
 }
 
-void cmd_help(char *input) {  // Fixed: added char *input parameter
-    char* arg = input + 5;
-    for (int i = 0; i < command_count; i++) { // get help on a specific command
-        if (compare_string(arg, (char*)command_registry[i].name) == 0) {
-            printk((char*)command_registry[i].description);
-	    printk("\ndust> ");
-            return;
-        }
+
+void cmd_help(int argc, char *argv[]) {  
+    if (argc > 1) {
+	    for (int i = 0; i < command_count; i++) {
+		    if (compare_string(argv[1], (char*)command_registry[i].name) == 0) {
+			    printk((char*)command_registry[i].description);
+			    printk("\ndust> ");
+			    return;
+		    }
+	    }
+	    printk("[-] Unknown command for HELP\n");
+    } else {
+	    print_string("[+] Available commands:\n");
+	    for (int i = 0; i < command_count; i++) {
+		    print_string("  ");
+		    print_string((char*)command_registry[i].name);
+		    print_string(" - ");
+		    print_string((char*)command_registry[i].description);
+		    print_string("\n");
+		}
     }
-    print_string("[+] Available commands:\n");
-    for (int i = 0; i < command_count; i++) {
-        print_string("  ");
-        print_string((char*)command_registry[i].name);
-        print_string(" - ");
-        print_string((char*)command_registry[i].description);
-        print_string("\n");
-    }
+
     print_string("dust> ");
+    
 }
 
 // Individual command implementations
-void cmd_ls(char *input) {
+void cmd_ls(int argc, char *argv[]) {
     fs_list_files();
     print_string("dust> ");
 }
 
-void cmd_rm(char *input) {
-	char* arg = input + 3;
-	fs_file_t* file = fs_get_file(arg);
-	if (file) {
-		if (fs_rm_file(arg) == 0) {
-			print_string("[+] File removed\n");
+void cmd_rm(int argc, char *argv[]) {
+	if (argc > 1) {
+		fs_file_t* file = fs_get_file(argv[1]);
+		if (file) {
+			if (fs_rm_file(argv[1]) == 0) {
+				print_string("[+] File removed\n");
+			} else {
+				print_string("[-] Failed to remove file\n");
+			}
 		} else {
-			print_string("[-] Failed to remove file\n");
+			print_string("[-] File not found\n");
 		}
-	} else {
-		print_string("[-] File not found\n");
 	}
 	print_string("dust> ");
 }
 
 
-void cmd_cat(char *input) {
-    char* arg = input + 4; // skip "CAT "
-    fs_file_t* file = fs_get_file(arg);
-    if (file) {
-        for (uint32_t i = 0; i < file->size; i++) {
-            print_char(file->data[i]);
-        }
-        print_nl();
-    } else {
-        print_string("[-] File not found\n");
+void cmd_cat(int argc, char *argv[]) {
+    if (argc != 0) {
+	    fs_file_t* file = fs_get_file(argv[1]);
+	    if (file) {
+		for (uint32_t i = 0; i < file->size; i++) {
+	            print_char(file->data[i]);
+	        }
+	        print_nl();
+	    } else {
+	        print_string("[-] File not found\n");
+	    }
     }
     print_string("dust> ");
 }
 
-void cmd_write(char *input) {
-    char filename[4] = {0}; // FIXME setup a proper kernel stack, these buffers are way too small.
-    char content[8] = {0};
-
-    // parse: WRITE <filename> <content>
-    int i = 0;
-    int j = 0;
-    char* arg = input + 6;
-    while (*arg && *arg != ' ') filename[i++] = *arg++;
-    if (*arg == ' ') arg++;
-    while (*arg) content[j++] = *arg++;
-
-    fs_write_file(filename, (uint8_t*)content, j);
-    print_string("[+] File written\n");
-    print_string("dust> ");
+void cmd_write(int argc, char *argv[]) {
+	if (argc < 3) {
+		printk("[-] Usage: WRITE <filename> <data>\n");
+	} else {
+		fs_write_file(argv[1], (uint8_t*)argv[2], string_length(argv[2]));
+		printk("[+] File written\n");
+	}
+	printk("dust> ");
 }
 
 
-void cmd_exit(char *input) {
+void cmd_exit(int argc, char *argv[]) {
     print_string("[!] Attempting Shutdown. Goodbye!\n");
     asm volatile (
         "mov $0x2000, %%eax\n\t" // shuts down qemu
@@ -186,21 +177,21 @@ void cmd_exit(char *input) {
     );
 }
 
-void cmd_panic(char *input) {
+void cmd_panic(int argc, char *argv[]) {
     panic("DEBUG");
 }
 
-void cmd_clear(char *input) {
+void cmd_clear(int argc, char *argv[]) {
     clear_screen();
     print_string("dust> ");
 }
 
-void cmd_info(char *input) {
+void cmd_info(int argc, char *argv[]) {
     print_string("[+] DustOS v0.0.1 - Kernel loaded\n");
     print_string("dust> ");
 }
 
-void cmd_debug(char *input) {
+void cmd_debug(int argc, char *argv[]) {
     print_string("[*] x86 Kernel Debug:\n");
     
     // tick count
@@ -209,7 +200,8 @@ void cmd_debug(char *input) {
     print_string("[+] Ticks: ");
     print_string(tick_str);
     print_string("\n");*/ // this would spam invalid opcode, so just do cmd_uptime instead
-    cmd_uptime(""); // parse no arguments
+    char *_argv[] = { "UPTIME" };
+    cmd_uptime(1, _argv); 
     
     // dynamic memory node size
     print_dynamic_node_size();
@@ -266,7 +258,7 @@ void cmd_debug(char *input) {
     print_string("dust> ");
 }
 
-void cmd_uptime(char *input) {
+void cmd_uptime(int argc, char *argv[]) {
     char time_str[32];
     int_to_string(tick, time_str);
     print_string("[+] ");
@@ -274,11 +266,9 @@ void cmd_uptime(char *input) {
     print_string("\ndust> ");
 }
 
-void cmd_alloc(char *input) {
-    int n = 0;
-    char *arg = input + 6;
-    if (*arg) {
-        n = atoi(arg);
+void cmd_alloc(int argc, char *argv[]) {
+    if (argc > 1) {
+	int n = atoi(argv[1]);
         if (n > 0) {
             alloc(n);
             print_string("[+] Allocation complete\n");
@@ -291,8 +281,11 @@ void cmd_alloc(char *input) {
     print_string("dust> ");
 }
 
-void cmd_echo(char *input) {
-    print_string(input + 5);
+void cmd_echo(int argc, char *argv[]) {
+    for (int i = 1; i < argc; i++) {
+	    print_string(argv[i]);
+	    if (i < argc - 1) print_string(" ");
+    }
     print_string("\n");
     print_string("dust> ");
 }
