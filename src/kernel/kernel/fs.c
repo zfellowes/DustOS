@@ -53,11 +53,16 @@ int fs_write_file(const char* name, uint8_t* data, uint32_t size) {
 		print_string("[-] File too large\n");
 		return -1;
 	}
+	if (string_length(name) > FS_MAX_FILENAME - 1) {
+		print_string("[-] Filename too long\n");
+		return -1;
+	}
 
 	fs_file_t* file = &fs.files[fs.num_files++];
 	memory_copy((uint8_t*)name, (uint8_t*)file->name, string_length(name) + 1);
 	file->size = size;
 	memory_copy(data, file->data, size);
+	print_string("[+] File written\n");
 	return 0;
 }
 

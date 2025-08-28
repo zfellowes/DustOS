@@ -158,7 +158,6 @@ void cmd_write(int argc, char *argv[]) {
 		printk("[-] Usage: WRITE <filename> <data>\n");
 	} else {
 		fs_write_file(argv[1], (uint8_t*)argv[2], string_length(argv[2]));
-		printk("[+] File written\n");
 	}
 	printk("dust> ");
 }
