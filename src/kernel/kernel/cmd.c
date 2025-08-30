@@ -9,9 +9,11 @@
 #include <kernel/fs.h>
 
 // Definitions
-#define MAX_COMMANDS 16
+#define MAX_COMMANDS 32
 #define MAX_ARGS 8
 #define MAX_ARG_LEN 64
+
+static fs_file_t* current_dir;
 
 // Tokenize any arguments
 int tokenize(char *input, char *argv[], int max_args)
@@ -46,7 +48,6 @@ void cmd_init(void) {
     cmd_register("EXIT", cmd_exit, "Shutdown the system");
     cmd_register("PANIC", cmd_panic, "Trigger kernel panic for debugging");
     cmd_register("CLEAR", cmd_clear, "Clear the screen");
-    cmd_register("INFO", cmd_info, "Display system information");
     cmd_register("DEBUG", cmd_debug, "Show detailed system debug information");
     cmd_register("UPTIME", cmd_uptime, "Show system uptime in ticks");
     cmd_register("LS", cmd_ls, "List files");
@@ -56,6 +57,11 @@ void cmd_init(void) {
     cmd_register("ALLOC", cmd_alloc, "Allocate memory: ALLOC <size>");
     cmd_register("ECHO", cmd_echo, "Echo input: ECHO <text>");
     cmd_register("HELP", cmd_help, "Show this help message");
+    cmd_register("MKDIR", cmd_mkdir, "Create new directory: MKDIR <dirname>");
+    cmd_register("CD", cmd_cd, "Change directory: CD <dirname>");
+    //cmd_register("MEM", cmd_mem, "Prints memory usage");
+
+    current_dir = fs_root();
 }
 
 void cmd_register(const char *name, command_handler_t handler, const char *description) {
@@ -116,16 +122,51 @@ void cmd_help(int argc, char *argv[]) {
 }
 
 // Individual command implementations
+/*void cmd_mem(int argc, char *argv[]) {
+	uint32_t usage = mem_get_usage();
+	uint32_t requests = mem_get_requests();
+
+	print_string("[*] Memory usage: ");
+	print_dec(usage);
+	print_string(" bytes\n");
+
+	print_string("[*] Allocations: ");
+	print_dec(requests);
+	print_nl();
+
+	print_string("dust> ");
+}
+*/
+void cmd_cd(int argc, char *argv[]) {
+	if (argc < 2) {
+		print_string("[-] Usage: CD <directory>\n");
+	} else if (compare_string(argv[1], "..") == 0) {
+		if (current_dir->parent) {
+			current_dir = current_dir->parent;
+		} else {
+			print_string("[-] Already at root\n");
+		}
+	} else {
+		fs_file_t* dir = fs_get_file(current_dir, argv[1]);
+		if (!dir || dir->type != FS_DIR) {
+			print_string("[-] Directory not found\n");
+		} else {
+			current_dir = dir;
+		}
+	}
+	print_string("dust> ");
+}
+
 void cmd_ls(int argc, char *argv[]) {
-    fs_list_files();
+    fs_list_files(current_dir, 0);
     print_string("dust> ");
 }
 
 void cmd_rm(int argc, char *argv[]) {
 	if (argc > 1) {
-		fs_file_t* file = fs_get_file(argv[1]);
+		fs_file_t* file = fs_get_file(current_dir, argv[1]);
 		if (file) {
-			if (fs_rm_file(argv[1]) == 0) {
+			if (fs_rm_file(current_dir, argv[1]) == 0) {
 				print_string("[+] File removed\n");
 			} else {
 				print_string("[-] Failed to remove file\n");
@@ -139,29 +180,69 @@ void cmd_rm(int argc, char *argv[]) {
 
 
 void cmd_cat(int argc, char *argv[]) {
-    if (argc != 0) {
-	    fs_file_t* file = fs_get_file(argv[1]);
-	    if (file) {
-		for (uint32_t i = 0; i < file->size; i++) {
-	            print_char(file->data[i]);
-	        }
-	        print_nl();
-	    } else {
-	        print_string("[-] File not found\n");
-	    }
-    }
-    print_string("dust> ");
+	if (argc < 2) {
+		print_string("[-] Usage: CAT <filename>\n");
+		print_string("dust> ");
+		return;
+	}
+
+	fs_file_t* file = fs_get_file(current_dir, argv[1]);
+	if (!file) {
+		print_string("[-] File not found\n");
+	} else {
+		if (file->type != FS_FILE) {
+			print_string("[-] Not a file\n");
+		} else {
+			for (uint32_t i = 0; i < file->size; i++) {
+				print_char(file->data[i]);
+			}
+			print_nl();
+		}
+	}
+	print_string("dust> ");
 }
+
 
 void cmd_write(int argc, char *argv[]) {
 	if (argc < 3) {
 		printk("[-] Usage: WRITE <filename> <data>\n");
 	} else {
-		fs_write_file(argv[1], (uint8_t*)argv[2], string_length(argv[2]));
+		const char* filename = argv[1];
+		char buffer[FS_MAX_FILESIZE];
+		int offset = 0;
+		
+		for (int i = 0; argv[1][i]; i++) {
+			if (argv[1][i] == '/') {
+				print_string("[-] '/' not allowed in filename\n");
+				printk("dust> ");
+				return;
+			}
+		}
+
+		for (int i = 2; i < argc; i ++) {
+			int len = string_length(argv[i]);
+			if (offset + len >= FS_MAX_FILESIZE) break;
+			memory_copy((uint8_t*)argv[i], (uint8_t*)(buffer + offset), len);
+			offset += len;
+			if (i < argc -1) buffer[offset++] = ' ';
+		}
+		fs_write_file(current_dir, filename, (uint8_t*)buffer, offset);
 	}
 	printk("dust> ");
 }
 
+void cmd_mkdir(int argc, char *argv[]) {
+	if (argc < 2) {
+		print_string("[-] Usage: MKDIR <dirname>\n");
+	} else {
+		if (fs_create_dir(current_dir, argv[1])) {
+			print_string("[+] Directory created\n");
+		} else {
+			print_string("[-] Failed to create directory\n");
+		}
+	}
+	print_string("dust> ");
+}
 
 void cmd_exit(int argc, char *argv[]) {
     print_string("[!] Attempting Shutdown. Goodbye!\n");
@@ -182,11 +263,6 @@ void cmd_panic(int argc, char *argv[]) {
 
 void cmd_clear(int argc, char *argv[]) {
     clear_screen();
-    print_string("dust> ");
-}
-
-void cmd_info(int argc, char *argv[]) {
-    print_string("[+] DustOS v0.0.1 - Kernel loaded\n");
     print_string("dust> ");
 }
 

@@ -13,13 +13,13 @@ void memory_copy(uint8_t *source, uint8_t *dest, uint32_t nbytes) {
     }
 }
 
-/*
- * The following code is based on code licensed under MIT licence
- * and thus also licensed under MIT license I guess?
- * For further details, see http://www.sunshine2k.de/license.html.
- */
-#define DYNAMIC_MEM_TOTAL_SIZE 4*1024
+#define KB(x) ((x) * 1024)
+#define MB(x) ((x) * 1024 * 1024)
+#define DYNAMIC_MEM_TOTAL_SIZE KB(64) // 64KB heap
 #define DYNAMIC_MEM_NODE_SIZE sizeof(dynamic_mem_node_t)
+
+static uint32_t total_allocated = 0;
+static uint32_t total_requests = 0; 
 
 typedef struct dynamic_mem_node {
     uint32_t size;
@@ -107,7 +107,17 @@ void *find_best_mem_block(dynamic_mem_node_t *dynamic_mem, size_t size) {
     return best_mem_block;
 }
 
+uint32_t mem_get_usage() {
+	return total_allocated;
+}
+
+uint32_t mem_get_requests() {
+	return total_requests;
+}
+
 void *mem_alloc(size_t size) {
+    total_requests++;
+    total_allocated += size;
     dynamic_mem_node_t *best_mem_block =
             (dynamic_mem_node_t *) find_best_mem_block(dynamic_mem_start, size);
 

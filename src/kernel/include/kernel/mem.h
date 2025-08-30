@@ -5,6 +5,10 @@
 
 #define NULL_POINTER ((void*)0)
 
+uint32_t mem_get_usage();
+
+uint32_t mem_get_requests();
+
 void memory_copy(uint8_t *source, uint8_t *dest, uint32_t nbytes);
 
 void init_dynamic_mem();

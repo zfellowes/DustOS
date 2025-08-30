@@ -26,11 +26,13 @@ void cmd_write(int argc, char *argv[]);
 void cmd_panic(int argc, char *argv[]);
 void cmd_clear(int argc, char *argv[]);
 void cmd_rm(int argc, char *argv[]);
-void cmd_info(int argc, char *argv[]);
 void cmd_debug(int argc, char *argv[]);
 void cmd_uptime(int argc, char *argv[]);
 void cmd_alloc(int argc, char *argv[]);
 void cmd_echo(int argc, char *argv[]);
+void cmd_mkdir(int argc, char *argv[]);
+void cmd_cd(int argc, char *argv[]);
+//void cmd_mem(int argc, char *argv[]);
 
 // External function declarations
 extern void test_syscall(void);

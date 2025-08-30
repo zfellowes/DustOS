@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <drivers/display.h>
 
 int string_length(const char s[]) {
     int i = 0;
@@ -78,10 +79,39 @@ int starts_with(const char* str, const char* prefix) {
 	return 1;
 }
 
+void print_dec(int num) {
+	char buffer[12];
+	int i = 0;
+	int is_negative = 0;
+
+	if (num == 0) {
+		print_char('0');
+		return;
+	}
+
+	if (num < 0) {
+		is_negative = 1;
+		num = -num;
+	}
+
+	while (num > 0) {
+		buffer[i++] = (num % 10) + '0';
+		num /= 10;
+	}
+
+	if (is_negative) {
+		print_char('-');
+	}
+
+	while (i--) {
+		print_char(buffer[i]);
+	}
+}
+
 
 /* K&R
  * Returns <0 if s1<s2, 0 if s1==s2, >0 if s1>s2 */
-int compare_string(char s1[], char s2[]) {
+int compare_string(const char s1[], const char s2[]) {
     int i;
     for (i = 0; s1[i] == s2[i]; i++) {
         if (s1[i] == '\0') return 0;

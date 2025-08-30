@@ -18,6 +18,8 @@ bool backspace(char s[]);
 
 void append(char s[], char n);
 
-int compare_string(char s1[], char s2[]);
+void print_dec(int num);
+
+int compare_string(const char s1[], const char s2[]);
 
 int starts_with(const char* str, const char* prefix);
