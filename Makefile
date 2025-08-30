@@ -1,28 +1,27 @@
 # MAKEFILE FOR i386 
-# MAKES KERNEL
 
 # $@ = target file
 # $< = first dependency
 # $^ = all dependencies
 
 # detect all .o files based on their .c source
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c arch/i386/cpu/*.c)
-HEADERS = $(wildcard kernel/*.h  drivers/*.h arch/i386/cpu/*.h)
-OBJ_FILES = ${C_SOURCES:.c=.o arch/i386/cpu/interrupt.o}
+C_SOURCES = $(wildcard src/kernel/kernel/*.c src/kernel/drivers/*.c src/kernel/arch/i386/cpu/*.c)
+HEADERS = $(wildcard src/kernel/include/kernel/*.h  src/kernel/include/drivers/*.h src/kernel/arch/i386/include/cpu/*.h)
+OBJ_FILES = ${C_SOURCES:.c=.o src/kernel/arch/i386/cpu/interrupt.o}
 
 CC ?= x86_64-elf-gcc
 LD ?= x86_64-elf-ld
 
-CFLAGS = -g -m32 -ffreestanding -fno-pie -fno-stack-protector -Iarch/i386/include -Iinclude
+CFLAGS = -g -m32 -ffreestanding -fno-pie -fno-stack-protector -Isrc/kernel/arch/i386/include -Isrc/kernel/include
 
 # First rule is the one executed when no parameters are fed to the Makefile
 all: run
 
 # Notice how dependencies are built as needed
-kernel.bin: arch/i386/boot/kernel_entry.o ${OBJ_FILES}
+kernel.bin: src/bootloader/arch/i386/kernel_entry.o ${OBJ_FILES}
 	$(LD) -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
 
-DustOS.bin: arch/i386/boot/mbr.bin kernel.bin
+DustOS.bin: src/bootloader/arch/i386/mbr.bin kernel.bin
 	cat $^ > $@
 
 run: DustOS.bin
@@ -32,7 +31,7 @@ echo: DustOS.bin
 	xxd $<
 
 # only for debug
-kernel.elf: arch/i386/boot/kernel_entry.o ${OBJ_FILES}
+kernel.elf: src/bootloader/arch/i386/kernel_entry.o ${OBJ_FILES}
 	$(LD) -m elf_i386 -o $@ -Ttext 0x1000 $^
 
 debug: DustOS.bin kernel.elf
@@ -53,7 +52,7 @@ debug: DustOS.bin kernel.elf
 
 clean:
 	$(RM) *.bin *.o *.dis *.elf
-	$(RM) kernel/*.o
-	$(RM) arch/i386/boot/*.o arch/i386/boot/*.bin
-	$(RM) drivers/*.o
-	$(RM) arch/i386/cpu/*.o
+	$(RM) src/kernel/kernel/*.o
+	$(RM) src/bootloader/arch/i386/*.o src/bootloader/arch/i386/*.bin
+	$(RM) src/kernel/drivers/*.o
+	$(RM) src/kernel/arch/i386/cpu/*.o
