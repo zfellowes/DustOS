@@ -17,7 +17,11 @@ void fs_init() {
 	fs.root->num_children = 0;
 
 	const char* test_content = "This is a test file!";
-	fs_write_file(fs.root, "HELLO.TXT", (uint8_t*)test_content, string_length((char*)test_content));
+	const char* welcome_content = "Welcome to DustOS";
+
+	fs_write_file(fs.root, "WELCOME.TXT", (uint8_t*)welcome_content, string_length((char*)welcome_content));
+	fs_file_t* initdir = fs_create_dir(fs.root, "DOCS");
+	fs_write_file(initdir, "HELLO.TXT", (uint8_t*)test_content, string_length((char*)test_content));
 }
 
 void fs_list_files(fs_file_t* dir, int indent) {
