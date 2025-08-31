@@ -9,8 +9,8 @@ C_SOURCES = $(wildcard src/kernel/kernel/*.c src/kernel/drivers/*.c src/kernel/a
 HEADERS = $(wildcard src/kernel/include/kernel/*.h  src/kernel/include/drivers/*.h src/kernel/arch/i386/include/cpu/*.h)
 OBJ_FILES = ${C_SOURCES:.c=.o src/kernel/arch/i386/cpu/interrupt.o}
 
-CC ?= x86_64-elf-gcc
-LD ?= x86_64-elf-ld
+CC ?= i386-elf-gcc
+LD ?= i386-elf-ld
 
 CFLAGS = -g -m32 -ffreestanding -fno-pie -fno-stack-protector -Isrc/kernel/arch/i386/include -Isrc/kernel/include
 
