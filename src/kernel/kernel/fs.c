@@ -1,7 +1,4 @@
-#include <kernel/fs.h>
-#include <kernel/printk.h>
-#include <kernel/util.h>
-#include <kernel/mem.h>
+#include <kernel/kernel.h>
 #include <drivers/display.h>
 
 static fs_t fs;

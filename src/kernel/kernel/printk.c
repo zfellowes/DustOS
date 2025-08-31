@@ -1,5 +1,5 @@
 #include <stdarg.h>
-#include <kernel/util.h>
+#include <kernel/kernel.h>
 #include <drivers/display.h>
 
 static void print_int(int value, int base, bool is_unsigned)

@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <drivers/display.h>
-#include <kernel/util.h>
+#include <kernel/kernel.h>
 
 void panic(const char* message)
 {

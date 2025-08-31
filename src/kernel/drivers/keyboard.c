@@ -3,7 +3,6 @@
 #include <drivers/ports.h>
 #include <cpu/isr.h>
 #include <drivers/display.h>
-#include <kernel/util.h>
 #include <kernel/kernel.h>
 
 #define BACKSPACE 0x0E

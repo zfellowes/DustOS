@@ -3,13 +3,7 @@
 #include <cpu/timer.h>
 #include <drivers/display.h>
 #include <drivers/keyboard.h>
-#include <kernel/util.h>
-#include <kernel/mem.h>
-#include <kernel/panic.h>
-#include <kernel/printk.h>
-#include <kernel/syscall.h>
-#include <kernel/cmd.h>
-#include <kernel/fs.h>
+#include <kernel/kernel.h>
 
 extern uint32_t tick;
 

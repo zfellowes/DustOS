@@ -1,8 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <kernel/mem.h>
+#include <kernel/kernel.h>
 #include <drivers/display.h>
-#include <kernel/util.h>
 
 // http://www.sunshine2k.de/articles/coding/cmemalloc/cmemory.html#ch33
 

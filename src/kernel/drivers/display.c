@@ -1,8 +1,7 @@
 #include <drivers/display.h>
 #include <drivers/ports.h>
 #include <stdint.h>
-#include <kernel/mem.h>
-#include <kernel/util.h>
+#include <kernel/kernel.h>
 
 void set_cursor(int offset) {
     offset /= 2;

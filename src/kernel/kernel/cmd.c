@@ -1,12 +1,6 @@
-#include <kernel/cmd.h>
-#include <kernel/util.h>
-#include <kernel/panic.h>
-#include <kernel/printk.h>
-#include <kernel/mem.h>
 #include <cpu/timer.h>
 #include <drivers/display.h>
-#include <kernel/syscall.h>
-#include <kernel/fs.h>
+#include <kernel/kernel.h>
 
 // Definitions
 #define MAX_COMMANDS 32

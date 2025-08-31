@@ -1,6 +1,5 @@
 #include <cpu/isr.h>
-#include <kernel/printk.h>
-#include <kernel/syscall.h>
+#include <kernel/kernel.h>
 
 #define MAX_SYSCALLS 256
 static syscall_t syscall_table[MAX_SYSCALLS];
