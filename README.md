@@ -10,7 +10,7 @@ The aim of this operating system is to help me get a better understading on low 
 
 A lot of code in this repository I have not written my self as I am lazy..
 
-I have linked below the repo/s that I have used code from/or have taken inspiration from:
+I have linked below the repos that I have used code from/or have taken inspiration from:
 
 - https://github.com/FRosner/FrOS
 - https://github.com/cia-foundation/TempleOS
@@ -20,7 +20,7 @@ I have linked below the repo/s that I have used code from/or have taken inspirat
 I have modified some files to my own liking and used the OSDev wiki as guidance.
 
 ### Features
-Currently, DustOS targets works on i386 BIOS.
+Currently, DustOS works on i386 BIOS.
 
 It has no userspace, meaning you operate in ring 0 at all times. 
 
