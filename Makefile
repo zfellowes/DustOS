@@ -4,10 +4,12 @@
 # $< = first dependency
 # $^ = all dependencies
 
-# detect all .o files based on their .c source
+# Kernel Sources
 C_SOURCES = $(wildcard src/kernel/kernel/*.c src/kernel/drivers/*.c src/kernel/arch/i386/cpu/*.c)
+ASM_SOURCES = $(wildcard src/kernel/arch/i386/cpu/*.asm)
 HEADERS = $(wildcard src/kernel/include/kernel/*.h  src/kernel/include/drivers/*.h src/kernel/arch/i386/include/cpu/*.h)
-OBJ_FILES = ${C_SOURCES:.c=.o src/kernel/arch/i386/cpu/interrupt.o}
+
+OBJ_FILES = ${C_SOURCES:.c=.o} ${ASM_SOURCES:.asm=.o}
 
 CC ?= i386-elf-gcc
 LD ?= i386-elf-ld
