@@ -2,6 +2,7 @@
 #include <drivers/display.h>
 #include <drivers/ports.h>
 #include <kernel/kernel.h>
+#include <mm/memory.h>
 
 // Definitions
 #define MAX_COMMANDS 32
@@ -78,7 +79,7 @@ void cmd_execute(char *input) {
 	}
 
 	for (int i = 0; i < command_count; i++) {
-		if (compare_string(argv[0], (char*)command_registry[i].name) == 0) {
+		if (strcmp(argv[0], (char*)command_registry[i].name) == 0) {
 			command_registry[i].handler(argc, argv);
 			return;
 		}
@@ -94,7 +95,7 @@ void cmd_execute(char *input) {
 void cmd_help(int argc, char *argv[]) {  
     if (argc > 1) {
 	    for (int i = 0; i < command_count; i++) {
-		    if (compare_string(argv[1], (char*)command_registry[i].name) == 0) {
+		    if (strcmp(argv[1], (char*)command_registry[i].name) == 0) {
 			    printk((char*)command_registry[i].description);
 			    printk("\ndust> ");
 			    return;
@@ -131,7 +132,7 @@ void cmd_reboot(int argc, char *argv[]) {
 void cmd_cd(int argc, char *argv[]) {
 	if (argc < 2) {
 		print_string("[-] Usage: CD <directory>\n");
-	} else if (compare_string(argv[1], "..") == 0) {
+	} else if (strcmp(argv[1], "..") == 0) {
 		if (current_dir->parent) {
 			current_dir = current_dir->parent;
 		} else {
@@ -211,9 +212,9 @@ void cmd_write(int argc, char *argv[]) {
 		}
 
 		for (int i = 2; i < argc; i ++) {
-			int len = string_length(argv[i]);
+			int len = strlen(argv[i]);
 			if (offset + len >= FS_MAX_FILESIZE) break;
-			memory_copy((uint8_t*)argv[i], (uint8_t*)(buffer + offset), len);
+			memcpy((uint8_t*)argv[i], (uint8_t*)(buffer + offset), len);
 			offset += len;
 			if (i < argc -1) buffer[offset++] = ' ';
 		}
@@ -293,28 +294,28 @@ void cmd_debug(int argc, char *argv[]) {
     char reg_str[32];
     print_string("[+] CPU Registers:\n");
 
-    int_to_string(eax, reg_str);
+    itoa(eax, reg_str);
     print_string("EAX = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(ebx, reg_str);
+    itoa(ebx, reg_str);
     print_string("EBX = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(ecx, reg_str);
+    itoa(ecx, reg_str);
     print_string("ECX = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(edx, reg_str);
+    itoa(edx, reg_str);
     print_string("EDX = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(esi, reg_str);
+    itoa(esi, reg_str);
     print_string("ESI = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(edi, reg_str);
+    itoa(edi, reg_str);
     print_string("EDI = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(ebp, reg_str);
+    itoa(ebp, reg_str);
     print_string("EBP = "); print_string(reg_str); print_string("\n");
 
-    int_to_string(esp, reg_str);
+    itoa(esp, reg_str);
     print_string("ESP = "); print_string(reg_str); print_string("\n");
 
     register_syscall(0, test_syscall);
@@ -326,7 +327,7 @@ void cmd_debug(int argc, char *argv[]) {
 
 void cmd_uptime(int argc, char *argv[]) {
     char time_str[32];
-    int_to_string(tick, time_str);
+    itoa(tick, time_str);
     print_string("[+] ");
     print_string(time_str);
     print_string("\ndust> ");

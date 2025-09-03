@@ -4,6 +4,7 @@
 #include <drivers/display.h>
 #include <drivers/keyboard.h>
 #include <kernel/kernel.h>
+#include <mm/memory.h>
 
 extern uint32_t tick;
 
@@ -24,7 +25,7 @@ void test_syscall()
 }
 
 void* alloc(int n) {
-	int *ptr = (int *) mem_alloc(n * sizeof(int));
+	int *ptr = (int *) malloc(n * sizeof(int));
 	    if (ptr == NULL_POINTER) {
 	        print_string("[-] Memory not allocated.\n");
 	    } else {

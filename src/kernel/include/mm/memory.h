@@ -9,7 +9,7 @@ uint32_t mem_get_usage();
 
 uint32_t mem_get_requests();
 
-void memory_copy(uint8_t *source, uint8_t *dest, uint32_t nbytes);
+void memcpy(uint8_t *source, uint8_t *dest, uint32_t nbytes);
 
 void init_dynamic_mem();
 
@@ -19,6 +19,6 @@ void print_dynamic_mem();
 
 void print_dynamic_mem_summary();
 
-void *mem_alloc(size_t size);
+void *malloc(size_t size);
 
-void mem_free(void *p);
+void free(void *p);

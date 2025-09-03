@@ -2,10 +2,11 @@
 #include <stdint.h>
 #include <kernel/kernel.h>
 #include <drivers/display.h>
+#include <mm/memory.h>
 
 // http://www.sunshine2k.de/articles/coding/cmemalloc/cmemory.html#ch33
 
-void memory_copy(uint8_t *source, uint8_t *dest, uint32_t nbytes) {
+void memcpy(uint8_t *source, uint8_t *dest, uint32_t nbytes) {
     int i;
     for (i = 0; i < nbytes; i++) {
         *(dest + i) = *(source + i);
@@ -39,7 +40,7 @@ void init_dynamic_mem() {
 
 void print_dynamic_node_size() {
     char node_size_string[256];
-    int_to_string(DYNAMIC_MEM_NODE_SIZE, node_size_string);
+    itoa(DYNAMIC_MEM_NODE_SIZE, node_size_string);
     print_string("DYNAMIC_MEM_NODE_SIZE = ");
     print_string(node_size_string);
     print_nl();
@@ -47,11 +48,11 @@ void print_dynamic_node_size() {
 
 void print_dynamic_mem_node(dynamic_mem_node_t *node) {
     char size_string[256];
-    int_to_string(node->size, size_string);
+    itoa(node->size, size_string);
     print_string("{size = ");
     print_string(size_string);
     char used_string[256];
-    int_to_string(node->used, used_string);
+    itoa(node->used, used_string);
     print_string("; used = ");
     print_string(used_string);
     print_string("}; ");
@@ -77,7 +78,7 @@ void print_dynamic_mem_summary() {
 	}
 
 	char used_str[32];
-	int_to_string(used, used_str);
+	itoa(used, used_str);
 	print_string("[+] Used dynamic memory: ");
 	print_string(used_str);
 	print_string(" bytes\n");
@@ -114,7 +115,7 @@ uint32_t mem_get_requests() {
 	return total_requests;
 }
 
-void *mem_alloc(size_t size) {
+void *malloc(size_t size) {
     total_requests++;
     total_allocated += size;
     dynamic_mem_node_t *best_mem_block =
@@ -178,7 +179,7 @@ void *merge_current_node_into_previous(dynamic_mem_node_t *current_mem_node) {
     }
 }
 
-void mem_free(void *p) {
+void free(void *p) {
     // move along, nothing to free here
     if (p == NULL_POINTER) {
         return;

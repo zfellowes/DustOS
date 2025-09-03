@@ -120,7 +120,7 @@ void isr_handler(registers_t *r) {
 	if (r->int_no < 32) {
 		print_string("received interrupt: ");
 		char s[12];
-		int_to_string(r->int_no, s);
+		itoa(r->int_no, s);
 		print_string(s);
 		print_nl();
 		print_string(exception_messages[r->int_no]);
@@ -128,7 +128,7 @@ void isr_handler(registers_t *r) {
 	} else {
 		print_string("received interrupt: ");
 		char s[12];
-		int_to_string(r->int_no, s);
+		itoa(r->int_no, s);
 		print_string(s);
 		print_nl();
 	}

@@ -6,13 +6,13 @@
 #define low_16(address) (uint16_t)((address) & 0xFFFF)
 #define high_16(address) (uint16_t)(((address) >> 16) & 0xFFFF)
 
-int string_length(const char s[]);
+int strlen(const char s[]);
 
 int atoi(const char *str);
 
 void reverse(char s[]);
 
-void int_to_string(int n, char str[]);
+void itoa(int n, char str[]);
 
 bool backspace(char s[]);
 
@@ -20,6 +20,6 @@ void append(char s[], char n);
 
 void print_dec(int num);
 
-int compare_string(const char s1[], const char s2[]);
+int strcmp(const char s1[], const char s2[]);
 
 int starts_with(const char* str, const char* prefix);

@@ -1,5 +1,6 @@
 #include <kernel/kernel.h>
 #include <drivers/display.h>
+#include <mm/memory.h>
 
 static fs_t fs;
 
@@ -8,17 +9,17 @@ fs_file_t* fs_root() {
 }
 
 void fs_init() {
-	fs.root = (fs_file_t*)mem_alloc(sizeof(fs_file_t));
-	memory_copy((uint8_t*)"root", (uint8_t*)fs.root->name, string_length("root") + 1);
+	fs.root = (fs_file_t*)malloc(sizeof(fs_file_t));
+	memcpy((uint8_t*)"root", (uint8_t*)fs.root->name, strlen("root") + 1);
 	fs.root->type = FS_DIR;
 	fs.root->num_children = 0;
 
 	const char* test_content = "This is a test file!";
 	const char* welcome_content = "Welcome to DustOS";
 
-	fs_write_file(fs.root, "WELCOME.TXT", (uint8_t*)welcome_content, string_length((char*)welcome_content));
+	fs_write_file(fs.root, "WELCOME.TXT", (uint8_t*)welcome_content, strlen((char*)welcome_content));
 	fs_file_t* initdir = fs_create_dir(fs.root, "DOCS");
-	fs_write_file(initdir, "HELLO.TXT", (uint8_t*)test_content, string_length((char*)test_content));
+	fs_write_file(initdir, "HELLO.TXT", (uint8_t*)test_content, strlen((char*)test_content));
 }
 
 void fs_list_files(fs_file_t* dir, int indent) {
@@ -40,7 +41,7 @@ fs_file_t* fs_get_file(fs_file_t* dir, const char* name) {
 	if (!dir || dir->type != FS_DIR) return NULL;
 
 	for (uint32_t i = 0; i < dir->num_children; i++) {
-		if (compare_string(dir->children[i]->name, name) == 0) {
+		if (strcmp(dir->children[i]->name, name) == 0) {
 			return dir->children[i];
 		}
 	}
@@ -58,7 +59,7 @@ int fs_write_file(fs_file_t* dir, const char* name, uint8_t* data, uint32_t size
 			return -1;
 		}
 		file->size = size;
-		memory_copy(data, file->data, size);
+		memcpy(data, file->data, size);
 		print_string("[+] File overwritten\n");
 		return 0;
 	}
@@ -74,15 +75,15 @@ int fs_write_file(fs_file_t* dir, const char* name, uint8_t* data, uint32_t size
 		return -1;
 	}
 
-	file = (fs_file_t*)mem_alloc(sizeof(fs_file_t));
+	file = (fs_file_t*)malloc(sizeof(fs_file_t));
 	if (!file) {
 		print_string("[-] Out of memory\n");
 		return -1;
 	}
-	memory_copy((uint8_t*)name, (uint8_t*)file->name, string_length(name) + 1);
+	memcpy((uint8_t*)name, (uint8_t*)file->name, strlen(name) + 1);
 	file->type = FS_FILE;
 	file->size = size;
-	memory_copy(data, file->data, size);
+	memcpy(data, file->data, size);
 	file->num_children = 0;
 	file->parent = dir;
 	dir->children[dir->num_children++] = file;
@@ -113,7 +114,7 @@ fs_file_t* fs_resolve_path(fs_file_t* start_dir, const char* path, char* out_fil
 		p++;
 	}
 	temp[idx] = '\0';
-	memory_copy((uint8_t*)temp, (uint8_t*)out_filename, string_length(temp) + 1);
+	memcpy((uint8_t*)temp, (uint8_t*)out_filename, strlen(temp) + 1);
 	return dir;
 }
 
@@ -121,8 +122,8 @@ int fs_rm_file(fs_file_t* dir, const char* name) {
 	if (!dir || dir->type != FS_DIR) return -1;
 
 	for (uint32_t i = 0; i < dir->num_children; i++) {
-		if (compare_string(dir->children[i]->name, name) == 0) {
-			mem_free(dir->children[i]);
+		if (strcmp(dir->children[i]->name, name) == 0) {
+			free(dir->children[i]);
 			for (uint32_t j = i; j < dir->num_children - 1; j++) {
 				dir->children[j] = dir->children[j + 1];
 			}
@@ -146,12 +147,12 @@ fs_file_t* fs_create_dir(fs_file_t* dir, const char* name) {
 		return NULL;
 	}
 
-	fs_file_t* new_dir = (fs_file_t*)mem_alloc(sizeof(fs_file_t));
+	fs_file_t* new_dir = (fs_file_t*)malloc(sizeof(fs_file_t));
 	if (!new_dir) {
 		print_string("[-] Out of memory\n");
 		return NULL;
 	}
-	memory_copy((uint8_t*)name, (uint8_t*)new_dir->name, string_length(name) +1);
+	memcpy((uint8_t*)name, (uint8_t*)new_dir->name, strlen(name) +1);
 	new_dir->type = FS_DIR;
 	new_dir->num_children = 0;
 	new_dir->parent = dir;

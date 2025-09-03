@@ -5,9 +5,9 @@
 # $^ = all dependencies
 
 # Kernel Sources
-C_SOURCES = $(wildcard src/kernel/kernel/*.c src/kernel/drivers/*.c src/kernel/arch/i386/cpu/*.c)
+C_SOURCES = $(wildcard src/kernel/kernel/*.c src/kernel/drivers/*.c src/kernel/arch/i386/cpu/*.c src/kernel/mm/*.c)
 ASM_SOURCES = $(wildcard src/kernel/arch/i386/cpu/*.asm)
-HEADERS = $(wildcard src/kernel/include/kernel/*.h  src/kernel/include/drivers/*.h src/kernel/arch/i386/include/cpu/*.h)
+HEADERS = $(wildcard src/kernel/include/kernel/*.h  src/kernel/include/drivers/*.h src/kernel/arch/i386/include/cpu/*.h src/kernel/include/mm/*.h)
 
 OBJ_FILES = ${C_SOURCES:.c=.o} ${ASM_SOURCES:.asm=.o}
 
@@ -58,3 +58,4 @@ clean:
 	$(RM) src/bootloader/arch/i386/*.o src/bootloader/arch/i386/*.bin
 	$(RM) src/kernel/drivers/*.o
 	$(RM) src/kernel/arch/i386/cpu/*.o
+	$(RM) src/kernel/mm/*.o
