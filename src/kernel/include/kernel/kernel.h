@@ -1,5 +1,7 @@
 #pragma once
 
+#define OSVERSION "v0.0.2"
+
 #include <kernel/util.h>
 #include <kernel/panic.h>
 #include <kernel/printk.h>

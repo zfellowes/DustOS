@@ -56,6 +56,7 @@ void cmd_init(void) {
     cmd_register("MKDIR", cmd_mkdir, "Create new directory: MKDIR <dirname>");
     cmd_register("CD", cmd_cd, "Change directory: CD <dirname>");
     cmd_register("REBOOT", cmd_reboot, "Reboots the system");
+    cmd_register("VERSION", cmd_version, "Prints the current version of DustOS");
 
     current_dir = fs_root();
 }
@@ -74,7 +75,7 @@ void cmd_execute(char *input) {
 	int argc = tokenize(input, argv, MAX_ARGS);
 
 	if (argc == 0) {
-		print_string("\ndust> ");
+		print_string("dust> ");
 		return;
 	}
 
@@ -88,7 +89,6 @@ void cmd_execute(char *input) {
 	print_string("[-] Unknown command: ");
 	print_string(argv[0]);
 	print_string("\ndust> ");
-
 }
 
 
@@ -118,15 +118,23 @@ void cmd_help(int argc, char *argv[]) {
 }
 
 // Individual command implementations
+void cmd_version(int argc, char *argv[]) {
+	printk("DustOS %s\n", OSVERSION);
+	printk("dust> ");
+}
+
+
 void cmd_reboot(int argc, char *argv[]) {
 	printk("[!] Attempting reboot...\n");
-	while (port_byte_in(0x64) & 0x02) {}
+	/*while (port_byte_in(0x64) & 0x02) {}
 	port_byte_out(0x64, 0xFE);
 	asm volatile (
 		"cli\n\t"
 		"hlt\n\t"
-	);
-	printk("dust> "); // shouldn't print the prompt
+	);*/
+	asm volatile ("lidt (%0)" : : "r"(0));
+	asm volatile ("int $0x0");
+	panic("Reboot failure");
 }
 
 void cmd_cd(int argc, char *argv[]) {

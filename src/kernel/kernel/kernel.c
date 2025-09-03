@@ -45,6 +45,7 @@ void* alloc(int n) {
 }
 
 void start_kernel() {
+
 	clear_screen();
 	print_string("[+] Installing interrupt service routines (ISRs).\n");
 	isr_install();
@@ -69,7 +70,7 @@ void start_kernel() {
 
 	clear_screen();
 
-	print_string("DustOS v0.0.1\n");
+	printk("DustOS %s\n", OSVERSION);
 	
 	// Initialize command registry
 	cmd_init();
@@ -78,6 +79,5 @@ void start_kernel() {
 }
 
 void execute_command(char *input) {
-	// Use the new command registry system
 	cmd_execute(input);
 }
