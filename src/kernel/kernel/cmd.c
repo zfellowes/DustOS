@@ -1,5 +1,6 @@
 #include <cpu/timer.h>
 #include <drivers/display.h>
+#include <drivers/ports.h>
 #include <kernel/kernel.h>
 
 // Definitions
@@ -53,7 +54,7 @@ void cmd_init(void) {
     cmd_register("HELP", cmd_help, "Show this help message");
     cmd_register("MKDIR", cmd_mkdir, "Create new directory: MKDIR <dirname>");
     cmd_register("CD", cmd_cd, "Change directory: CD <dirname>");
-    //cmd_register("MEM", cmd_mem, "Prints memory usage");
+    cmd_register("REBOOT", cmd_reboot, "Reboots the system");
 
     current_dir = fs_root();
 }
@@ -116,21 +117,17 @@ void cmd_help(int argc, char *argv[]) {
 }
 
 // Individual command implementations
-/*void cmd_mem(int argc, char *argv[]) {
-	uint32_t usage = mem_get_usage();
-	uint32_t requests = mem_get_requests();
-
-	print_string("[*] Memory usage: ");
-	print_dec(usage);
-	print_string(" bytes\n");
-
-	print_string("[*] Allocations: ");
-	print_dec(requests);
-	print_nl();
-
-	print_string("dust> ");
+void cmd_reboot(int argc, char *argv[]) {
+	printk("[!] Attempting reboot...\n");
+	while (port_byte_in(0x64) & 0x02) {}
+	port_byte_out(0x64, 0xFE);
+	asm volatile (
+		"cli\n\t"
+		"hlt\n\t"
+	);
+	printk("dust> "); // shouldn't print the prompt
 }
-*/
+
 void cmd_cd(int argc, char *argv[]) {
 	if (argc < 2) {
 		print_string("[-] Usage: CD <directory>\n");

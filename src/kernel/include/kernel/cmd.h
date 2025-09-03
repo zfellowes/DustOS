@@ -32,7 +32,7 @@ void cmd_alloc(int argc, char *argv[]);
 void cmd_echo(int argc, char *argv[]);
 void cmd_mkdir(int argc, char *argv[]);
 void cmd_cd(int argc, char *argv[]);
-//void cmd_mem(int argc, char *argv[]);
+void cmd_reboot(int argc, char *argv[]);
 
 // External function declarations
 extern void test_syscall(void);
