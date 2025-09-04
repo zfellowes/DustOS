@@ -10,7 +10,7 @@ fs_file_t* fs_root() {
 
 void fs_init() {
 	fs.root = (fs_file_t*)malloc(sizeof(fs_file_t));
-	memcpy((uint8_t*)"root", (uint8_t*)fs.root->name, strlen("root") + 1);
+	memcpy((uint8_t*)fs.root->name, (uint8_t*)"root", strlen("root") + 1);
 	fs.root->type = FS_DIR;
 	fs.root->num_children = 0;
 
@@ -59,7 +59,7 @@ int fs_write_file(fs_file_t* dir, const char* name, uint8_t* data, uint32_t size
 			return -1;
 		}
 		file->size = size;
-		memcpy(data, file->data, size);
+		memcpy(file->data, data, size);
 		print_string("[+] File overwritten\n");
 		return 0;
 	}
@@ -80,10 +80,10 @@ int fs_write_file(fs_file_t* dir, const char* name, uint8_t* data, uint32_t size
 		print_string("[-] Out of memory\n");
 		return -1;
 	}
-	memcpy((uint8_t*)name, (uint8_t*)file->name, strlen(name) + 1);
+	memcpy((uint8_t*)file->name, (uint8_t*)name, strlen(name) + 1);
 	file->type = FS_FILE;
 	file->size = size;
-	memcpy(data, file->data, size);
+	memcpy(file->data, data, size);
 	file->num_children = 0;
 	file->parent = dir;
 	dir->children[dir->num_children++] = file;
@@ -114,7 +114,7 @@ fs_file_t* fs_resolve_path(fs_file_t* start_dir, const char* path, char* out_fil
 		p++;
 	}
 	temp[idx] = '\0';
-	memcpy((uint8_t*)temp, (uint8_t*)out_filename, strlen(temp) + 1);
+	memcpy((uint8_t*)out_filename, (uint8_t*)temp, strlen(temp) + 1);
 	return dir;
 }
 
@@ -152,7 +152,7 @@ fs_file_t* fs_create_dir(fs_file_t* dir, const char* name) {
 		print_string("[-] Out of memory\n");
 		return NULL;
 	}
-	memcpy((uint8_t*)name, (uint8_t*)new_dir->name, strlen(name) +1);
+	memcpy((uint8_t*)new_dir->name, (uint8_t*)name, strlen(name) +1);
 	new_dir->type = FS_DIR;
 	new_dir->num_children = 0;
 	new_dir->parent = dir;

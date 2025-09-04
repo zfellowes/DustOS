@@ -6,7 +6,7 @@
 
 // Definitions
 #define MAX_COMMANDS 32
-#define MAX_ARGS 8
+#define MAX_ARGS 32
 #define MAX_ARG_LEN 64
 
 static fs_file_t* current_dir;
@@ -222,7 +222,7 @@ void cmd_write(int argc, char *argv[]) {
 		for (int i = 2; i < argc; i ++) {
 			int len = strlen(argv[i]);
 			if (offset + len >= FS_MAX_FILESIZE) break;
-			memcpy((uint8_t*)argv[i], (uint8_t*)(buffer + offset), len);
+			memcpy((uint8_t*)(buffer + offset), (uint8_t*)argv[i], len);
 			offset += len;
 			if (i < argc -1) buffer[offset++] = ' ';
 		}

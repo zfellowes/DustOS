@@ -6,10 +6,10 @@
 
 // http://www.sunshine2k.de/articles/coding/cmemalloc/cmemory.html#ch33
 
-void memcpy(uint8_t *source, uint8_t *dest, uint32_t nbytes) {
+void memcpy(uint8_t *dest, uint8_t *src, uint32_t nbytes) {
     int i;
     for (i = 0; i < nbytes; i++) {
-        *(dest + i) = *(source + i);
+        *(dest + i) = *(src + i);
     }
 }
 

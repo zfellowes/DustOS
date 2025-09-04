@@ -9,7 +9,7 @@ uint32_t mem_get_usage();
 
 uint32_t mem_get_requests();
 
-void memcpy(uint8_t *source, uint8_t *dest, uint32_t nbytes);
+void memcpy(uint8_t *dest, uint8_t *src, uint32_t nbytes);
 
 void init_dynamic_mem();
 
