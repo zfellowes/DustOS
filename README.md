@@ -51,7 +51,7 @@ xxd
 ```
 
 ### Installation and running
-To install: ``` git clone https://github.com/zzhjf8/DustOS.git ```
+To install: ``` git clone https://github.com/zfellowes/DustOS.git ```
 
 Next, change directory into the DustOS/ folder you cloned.
 
